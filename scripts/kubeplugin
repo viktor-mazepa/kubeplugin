@@ -1,0 +1,16 @@
+# Check for correct number of arguments
+RESOURCE_TYPE=$1
+NAME_SPACE=$2
+
+# Retrieve resource usage statistics from Kubernetes
+printf "Resource%-2s | Namespace%-5s | Name%-45s | CPU(core) | Memory%-7s |  %s\n"
+kubectl top $RESOURCE_TYPE -n $NAME_SPACE | tail -n +2 | while read line
+do
+  NAME=$(echo $line | awk '{print $1}')
+  CPU=$(echo $line | awk '{print $2}')
+  MEMORY=$(echo $line | awk '{print $3}')
+
+  # Output the statistics to the console
+   printf "%-10s |%-15s |%-50s |%-10s |%-15s|\n" "$RESOURCE_TYPE" "$NAME_SPACE" "$NAME" "$CPU" "$MEMORY"
+  # echo "$RESOURCE_TYPE, $2, $NAME, $CPU, $MEMORY"
+done
